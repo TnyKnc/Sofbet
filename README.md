@@ -1,4 +1,7 @@
 # Sofbet
+
+![socketio-logo](https://user-images.githubusercontent.com/9505978/56699791-aad09200-66ff-11e9-8961-752da61107df.png)
+
 ## Node JS - Socket IO Sohbet Uygulaması
 #### Tanım
 Proje Node JS üzerinde Socket IO modülünü kullanarak sohbet uygulamasını barındırmaktadır.
