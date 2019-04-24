@@ -16,6 +16,8 @@ Kullanıcılar (online ve offline olma durumları), mesajlar (gönderilen ve gö
 
 Arayüz üzerinde online kullanıcı adları yeşil renk ile, offline kullanıcı adları kırmızı renk ile görüntülenmektedir.
 
+![Ekran Alıntısı2](https://user-images.githubusercontent.com/9505978/56699901-2fbbab80-6700-11e9-8133-157f8797e1ce.PNG)
+
 #### Kurulum
 Yerel deponuza klonladığınız projenin çalışması için sisteminizde Node JS ve Mysql veri tabanı yüklü olması gerekmektedir.
 >Veritabanı tabloları ve alanları "veritabani.sql" dosyası içerisinde mevcuttur.
