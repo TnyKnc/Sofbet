@@ -1,0 +1,268 @@
+<html><head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" href="js-harici/bootstrap.min.css">
+        <script src="js-harici/jquery.min.js"></script>
+        <script src="js-harici/bootstrap.min.js"></script>
+        <title>Sofbet</title>
+        <script src="../js/jquery-1.9.1.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    
+        <script>
+          $(document).ready(function()
+                                  {
+                                      $('#ana2').hide();
+                                      $('#mesajVeKullanici').hide();
+                                      $('#yazilanMesajlarVeDuyurular').hide();
+                                      var socket = io.connect('http://localhost:8000');
+                                      var adi;
+                                      $('#login').click(function(){
+                                          adi=$('#name').val();
+                                          $("#useeer").text(adi);
+                                          socket.emit('chat message',adi);
+                                          $("#ana").remove();
+                                          $('#ana2').show();
+                                          $('#mesajVeKullanici').show();
+                                          $('#yazilanMesajlarVeDuyurular').show();
+    
+                                          socket.emit('ddd',adi);
+                                          socket.emit('KullnicilariListele',adi);
+                                          socket.emit("güncelle",adi);
+                                          socket.emit("offlinemessage",adi);
+    
+                                          return false;
+                                      });
+    
+                                      socket.on("gncl",function(msg){
+                                          var  tbl="<li style='color: #008800' id='"+ msg  +"'"+">"+"<input type='checkbox' class='chkbox'  value="+msg+">"+msg+"</li>";
+                                          $('#kullanicilar').append(tbl);
+                                      });
+                                      socket.on('KullnicilariListele',function(msq2){
+    
+                                          var tbl=
+                                                  $.each(msq2,function(key,value){
+                                                      if(value.durum==0) {
+                                                          tbl = "<li class='checkbox checkbox-primary' style='color: #cc0000' id='"+ value.kullaniciadi  +"'"+">"+" <input type='checkbox'  class='chkbox' value=" + value.kullaniciadi + " >"  + value.kullaniciadi + "</li>";
+                                                          $('#kullanicilar').append(tbl);
+                                                      }
+                                                      else{
+                                                          tbl = "<b><li style='color: #black'id='"+ value.kullaniciadi  +"'"+">"+"<input type='checkbox'  class='chkbox' value=" + value.kullaniciadi + " >" + value.kullaniciadi + "</li></b>";
+                                                          $('#kullanicilar').append(tbl);
+                                                      }
+                                                  });
+                                      });
+    
+                      $('#gonder').click(function(){
+                      var sec=0;
+                      var mesaj=$('#m').val();
+    
+                      var checkboxarray=[];
+                      $('.chkbox:checked').each(function(){
+                          sec++;
+                         checkboxarray.push($(this).val());
+                      });
+    
+                      if(sec==1){
+                        socket.emit("private",checkboxarray[0],mesaj,adi);
+                          $('#messages').append($('<li>').text(adi+" -> "+checkboxarray[0] +"  :  "+mesaj));
+                          $('#messagesOzel').append($('<li>').text(adi+" -> "+checkboxarray[0] +"  :  "+mesaj));
+    
+                      }
+                      else if(sec>1)
+                      {
+                          socket.emit("group",checkboxarray,mesaj,adi);
+                          $('#messages').append($('<li>').text(adi+" -> "+checkboxarray +"  :  "+mesaj));
+                          $('#messagesGroup').append($('<li>').text(adi+" -> "+checkboxarray +"  :  "+mesaj));
+                      }
+                      else{
+                          socket.emit('chatmesajyolla', mesaj, adi);
+    
+                      }
+                      return false;
+                  });
+                  socket.on('whisper',function(msg,msg1,msg2){
+                      $('#messages').append($('<li>').text(msg1+" -> "+msg2+"  :  "+msg));
+                      $('#messagesGroup').append($('<li>').text(msg1+" -> "+msg2 +"  :  "+msg));
+    
+                  });
+                  socket.on('whisper1',function(msg,msg1,msg2){
+                      $('#messages').append($('<li>').text(msg1+" -> "+msg2+"  :  "+msg));
+                      $('#messagesOzel').append($('<li>').text(msg1+" -> "+msg2 +"  :  "+msg));
+    
+                  });
+                  socket.on('ofmessage',function(al){
+                      var tbl=
+                              $.each(al,function(key,value){
+                                  $('#messages').append($('<li>').text(value.gonderen+" -> "+adi +"  :  "+value.mesaj));
+                                  $('#messagesOff').append($('<li>').text(value.gonderen+" -> "+adi +"  :  "+value.mesaj));
+                                  $('#kullanicilar').append(tbl);
+                              });
+                  });
+                  socket.on('chatmesajyolla', function(msg,add,all){
+                      $('#messages').append($('<li>').text(add+" -> "+ " : "+msg));
+                      $('#messagesBroad').append($('<li>').text(add+" -> "+all+"  :  "+msg));
+                  });
+                 socket.on("kapatma", function (msg) {
+                     $("#"+msg).css({color:'#cc0000'});
+                  });
+                  socket.on("opennn", function (msg) {
+                      $("#"+msg).css({color:'#008800'});
+                  });
+                  $('#exit').click(function(){
+                      socket.emit("kapat",adi);
+    
+                      socket.disconnect();
+                      $('#ana2').remove();
+                      $('#mesajVeKullanici').remove();
+                      $('#yazilanMesajlarVeDuyurular').remove();
+                        return false;
+                  });
+                                      /*window.onbeforeunload = function(){
+                                          socket.emit("kapat",adi);
+    
+                                          socket.disconnect();
+                                          $('#ana2').remove();
+                                          $('#mesajVeKullanici').remove();
+                                          return "sayfadan çıkıyorsunuz";
+                                      }*/
+    
+                                  });
+        </script>
+      </head><body>
+        <div id="ana">
+          <form id="slick-login" style="margin-bottom: 100px">
+            <center>
+              <img src="img/logo.png" width="96" height="96">
+            </center>
+            <label for="username">username</label>
+            <input type="text" id="name" name="username" class="placeholder" placeholder="Kullanıcı Adınız">
+            <input type="submit" value="Giriş" id="login">
+          </form>
+        </div>
+        <div class="container-fluid" id="mesajVeKullanici"> 
+          <br>
+          <div class="row">
+            <!--Mesaj Alanı Başladı-->
+            <div class="col-lg-11 col-md-3 col-sm-4">
+              <div class="col-lg-2 col-md-3 col-sm-4 ">
+                <div class="btn-group-vertical " role="group">
+                  <button type="button" class="btn " href="#broadcast" data-toggle="tab" style="text-align:left;">
+                    <img src="img/discussionicon/008-collaboration.png" height="32" width="32">&nbsp;Genel Mesajlar</button>
+                  <button type="button" class="btn " href="#grup" data-toggle="tab" style="text-align:left;">
+                    <img src="img/discussionicon/006-conversation-1.png" height="32" width="32">&nbsp;Grup Mesajları</button>
+                  <button type="button" class="btn " href="#offline" data-toggle="tab" style="text-align:left;">
+                    <img src="img/discussionicon/017-notification.png" height="32" width="32">&nbsp;Çevrimdışı Mesajlar
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  </button>
+                  <button type="button" class="btn " href="#ozel" data-toggle="tab" style="text-align:left;">
+                    <img src="img/discussionicon/013-chat-3.png" height="32" width="32">&nbsp;Özel Mesajlar</button>
+                </div>
+              </div>
+              <div class="list-group col-lg-10 col-md-9 col-sm-8">
+                <!-- Tab panes başladı -->
+                <div class="tab-content">
+                  <div class=" tab-pane fade in active" id="broadcast">
+                    <div>
+                      <p class="text-success list-group-item" style="text-align: center">Genel Mesajlar</p>
+                      <ul class="list-group-item" id="messagesBroad" style="height: 125px; overflow: auto; list-style-type: none"></ul>
+                    </div>
+                    <hr style="margin:0;">
+                  </div>
+                  <div class="tab-pane fade " id="grup">
+                    <div>
+                      <p class="text-success list-group-item" style="text-align: center">Grup Mesajları
+    
+                      </p>
+                      <ul class="list-group-item" id="messagesGroup" style="height: 125px; overflow: auto; list-style-type: none"></ul>
+                    </div>
+                    <hr style="margin:0;">
+                  </div>
+                  <div class=" tab-pane fade" id="offline">
+                    <div>
+                      <p class="text-success list-group-item" style="text-align: center">Çevrimdışı Mesajlar
+    
+                      </p>
+                      <ul class="list-group-item" id="messagesOff" style="height: 125px; overflow: auto; list-style-type: none"></ul>
+                    </div>
+                    <hr style="margin:0;">
+                  </div>
+                  <div class="tab-pane fade " id="ozel">
+                    <div>
+                      <p class="text-success list-group-item" style="text-align: center">Özel Mesajlar
+    
+                      </p>
+                      <ul class="list-group-item" id="messagesOzel" style="height: 125px; overflow: auto; list-style-type: none"></ul>
+                    </div>
+                    <hr style="margin:0;">
+                  
+                  </div>
+                 <!-- Tab panes bitti -->
+                </div>
+               <br>
+    
+              </div>
+    
+                      
+              <div class="col-lg-2 col-md-3 col-sm-4 ">
+    
+                    <form style="background-color: #f5f5f5">
+                        <b>
+                          <br>
+                            <label class="iconkullanicilar">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kullanıcılar</label>
+                            <br>
+                          <!--<p class="text-primary" style="text-align: center;">Kullanıcılar</p>-->
+                        </b>
+                          <ul id="kullanicilar" style="height: 500px; width: 99%; overflow: auto; list-style-type: none"></ul>
+                        </form>
+               
+              </div>
+              
+              
+                <div class="list-group col-lg-10 col-md-9 col-sm-8">
+                  <p class="text-success list-group-item" style="text-align: center">Son Mesajlar</p>
+                  <ul class="list-group-item" id="messages" style="height: 25px; width: 100%;overflow: auto; list-style-type: none"></ul>
+                </div>
+            </div>
+            <!--Mesaj Alanı Bitti-->
+    
+          </div>
+        </div>
+    
+    
+        <!--Bottom-->
+        <!--Yazılan Mesajlar Alanı Başladı-->
+        <div class="container" id="yazilanMesajlarVeDuyurular">
+          <br>
+        </div>
+        <div id="ana2">
+          <form id="sendForm" action="" style="padding: 3px; position: fixed; bottom: 0px; width: 100%;">
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <font color="black">Kullanıcı Adınız: &nbsp;</font>
+                  </td>
+                  <td>
+                    <b>
+                      <font id="useeer" style="color:black;"></font>
+                    </b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <input id="m" autocomplete="off" style="border: 0; padding: 10px; width: 80%; margin-right: .5%; margin-left: 1%">
+            <button id="gonder" class="btn btn-sm btn-success" style="width: 7%;  border: none; padding: 10px;">Gönder</button>
+            <button id="exit" class="btn btn-danger btn-sm" style="width: 7%; border: none; padding: 10px;">Çıkış</button>
+          </form>
+        </div>
+    
+    
+    </body></html>
+    

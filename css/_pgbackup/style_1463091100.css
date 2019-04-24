@@ -1,0 +1,98 @@
+/*
+CSS RESET
+http://meyerweb.com/eric/tools/css/reset/
+v2.0 | 20110126
+License:  none (public domain)
+ */
+
+body
+{
+    background:url("../img/bg.jpg") top left repeat ;
+}
+#menu
+{
+    margin-bottom: 0px!important;
+}
+#slick-login {
+    width: 220px;
+    height: 155px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -110px;
+    margin-top: -75px;
+
+    animation: login 1s ease-in-out;
+}
+
+#slick-login label {
+    display: none;
+}
+
+.placeholder {
+    color: #444;
+}
+
+#slick-login input[type="text"],#slick-login input[type="password"] {
+    width: 100%;
+    height: 40px;
+    margin-top: 7px;
+    font-size: 14px;
+    color: #444;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, .49);
+
+    padding-left: 20px;
+
+    background-clip: padding-box;
+    border-radius: 6px;
+
+    box-shadow: inset 0px 2px 0px #d9d9d9;
+
+    transition: all .1s ease-in-out;
+}
+
+#slick-login input[type="text"]:focus,#slick-login input[type="password"]:focus {
+    -webkit-box-shadow: inset 0px 2px 0px #a7a7a7;
+    box-shadow: inset 0px 2px 0px #a7a7a7;
+}
+
+#slick-login input:first-child {
+    margin-top: 0px;
+}
+
+#slick-login input[type="submit"] {
+    width: 100%;
+    height: 50px;
+    margin-top: 7px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0px -1px 0px #5b6ddc;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, .49);
+
+    background-clip: padding-box;
+    border-radius: 6px;
+
+    background-color: #5466da;
+
+    box-shadow: inset 0px 1px 0px #9ab1ec;
+
+    cursor: pointer;
+
+
+    transition: all .1s ease-in-out;
+}
+
+#slick-login input[type="submit"]:hover {
+    background-color: #5f73e9;
+
+    box-shadow: inset 0px 1px 0px #aab9f4;
+    margin-top: 10px;
+}
+
+#slick-login input[type="submit"]:active {
+    background-color: #7588e1;
+    box-shadow: inset 0px 1px 0px #93a9e9;
+}
