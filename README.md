@@ -6,6 +6,8 @@
 #### Tanım
 Proje Node JS üzerinde Socket IO modülünü kullanarak sohbet uygulamasını barındırmaktadır.
 
+![proje_gif](https://user-images.githubusercontent.com/9505978/56699831-dfdce480-66ff-11e9-8dac-c93751c78e65.gif)
+
 Projede yayın (broadcast) mesajı ile açık olan tüm kullanıcılara (genel mesaj), istenilen kullanıcılara (grup mesajı), tek kullanıcıya (özel mesaj), kapalı kullanıcılara (çevrimdışı mesaj) atılabilir.
 
 Çevrimdışı kullanıcılar çevrimiçi olduklarında kendilerine gelen mesajları okuyabilmektedir.
