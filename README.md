@@ -44,7 +44,7 @@ npm install express
 ```
 Server - Client arasında tcp bağlantısı kullanarak haberleşmeyi sağlayan modül;
 ```bash
-npm install socket.io
+npm install socket.io@2.3.0
 ```
 xml formatındaki dosya işlemleri yapabilmek için gerekli olan modül;
 ```bash
